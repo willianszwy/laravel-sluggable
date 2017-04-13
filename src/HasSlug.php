@@ -95,7 +95,7 @@ trait HasSlug
             return $this->$slugField;
         }
 
-        return str_slug($this->getSlugSourceString());
+        return str_slug($this->getSlugSourceString(), $this->slugOptions->separator);
     }
 
     /**
@@ -137,7 +137,7 @@ trait HasSlug
         $i = 1;
 
         while ($this->otherRecordExistsWithSlug($slug) || $slug === '') {
-            $slug = $originalSlug.'-'.$i++;
+            $slug = $originalSlug.$this->slugOptions->separator.$i++;
         }
 
         return $slug;

@@ -213,4 +213,64 @@ class HasSlugTest extends TestCase
 
         $this->assertEquals('this-is-a-test', $model->url);
     }
+
+    /** @test */
+    public function it_can_accept_other_separator()
+    {
+        $model = new class extends TestModel {
+            public function getSlugOptions(): SlugOptions
+            {
+                return parent::getSlugOptions()->withSeparator('_');
+            }
+        };
+
+        $model->name = 'this is a test';
+        $model->save();
+
+        $this->assertEquals('this_is_a_test', $model->url);
+    }
+
+    /** @test */
+    public function it_can_accept_other_separator_in_a_uniq_slug()
+    {
+        $model = new class extends TestModel {
+            public function getSlugOptions(): SlugOptions
+            {
+                return parent::getSlugOptions()->withSeparator('_');
+            }
+        };
+
+        $model->name = 'this is a test';
+        $model->save();
+
+        foreach (range(1, 10) as $i) {
+            $other_model = new class extends TestModel {
+                public function getSlugOptions(): SlugOptions
+                {
+                    return parent::getSlugOptions()->withSeparator('_');
+                }
+            };
+
+            $other_model->name = 'this is a test';
+            $other_model->save();
+
+            $this->assertEquals("this_is_a_test_{$i}", $other_model->url);
+        }
+    }
+
+    /** @test */
+    public function it_can_handle_null_values_when_creating_slugs_with_othe_separator()
+    {
+        $model = new class extends TestModel {
+            public function getSlugOptions(): SlugOptions
+            {
+                return parent::getSlugOptions()->withSeparator('_');
+            }
+        };
+
+        $model->name = null;
+        $model->save();
+
+        $this->assertEquals('_1', $model->url);
+    }
 }

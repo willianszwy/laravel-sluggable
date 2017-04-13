@@ -22,6 +22,9 @@ class SlugOptions
     /** @var bool */
     public $generateSlugsOnUpdate = true;
 
+    /** @val string */
+    public $separator = '-';
+
     public static function create(): SlugOptions
     {
         return new static();
@@ -70,6 +73,13 @@ class SlugOptions
     public function doNotGenerateSlugsOnUpdate(): SlugOptions
     {
         $this->generateSlugsOnUpdate = false;
+
+        return $this;
+    }
+
+    public function withSeparator(string $separator) : SlugOptions
+    {
+        $this->separator = $separator;
 
         return $this;
     }
